@@ -5227,6 +5227,74 @@ def writes_into_codeyam(command):
     return any(".codeyam/" in path for path in explicit)
 
 
+# Programs that can only LOOK at a path — list it, count it, grep it, print it.
+# A pipeline made of nothing but these, with no output redirect, cannot hand a
+# store's bytes to a parser elsewhere in the compound, so a store it names is
+# co-occurrence, not a parse target. An allowlist, not a denylist: `cp`, `xargs`,
+# `while`, `for` and an assignment can all launder a store into the parse, and
+# none of them is here.
+_INSPECTION_ONLY_PROGRAMS = frozenset(
+    (
+        "ls", "cat", "head", "tail", "wc", "grep", "egrep", "rg", "sort", "uniq",
+        "cut", "tr", "stat", "du", "file", "diff", "test", "[", "echo", "printf",
+        "git", "true",
+    )
+)
+
+# Output redirects that discard rather than capture. Any other `>` makes the
+# pipeline a writer, and a written copy can be parsed in the next command.
+_DISCARDING_REDIRECT = re.compile(r"\d?>&\d|\d?>\s*/dev/null")
+
+
+def _is_inspection_only_stage(stage):
+    """True when `stage` runs an inspection-only program and writes nothing.
+
+    A leading assignment that itself names `.codeyam/` disqualifies the stage:
+    `S=.codeyam/scenarios ls` binds the store to a name a later parse can use."""
+    if ">" in _DISCARDING_REDIRECT.sub("", stage):
+        return False
+    for tok in stage.split():
+        if _ASSIGNMENT.match(tok):
+            if ".codeyam/" in tok:
+                return False
+            continue
+        if tok in _COMMAND_PREFIXES:
+            continue
+        return _program_name(tok) in _INSPECTION_ONLY_PROGRAMS
+    return False
+
+
+def without_standalone_inspections(command):
+    """`command` with every pipeline that only INSPECTS a path removed, so
+    the state-read guard judges the store a parse actually reads rather than
+    any store named anywhere in the compound.
+
+    `json.load(open('$S/audit.json')); ls .codeyam/scenarios | wc -l` names a
+    store, but the `ls` pipeline cannot feed the parse: it is a separate
+    command whose output goes to the terminal. Matching on the whole string
+    refused exactly that, twice in one session, and counted both toward the
+    recurring-guardrail ordinal. A pipe INTO the parser keeps the stages in one
+    pipeline, so `cat .codeyam/x.json | python3 -c 'json.load(sys.stdin)'` is
+    left intact and still refused.
+
+    A command containing a command or process substitution (`$(…)`, a backtick,
+    `<(…)`) is returned unchanged: the splitter treats the parentheses as
+    separators, so a substituted `ls .codeyam/…` would look standalone while
+    its output is in fact an argument of the parse. Unscoped is the old,
+    stricter verdict, which is the safe direction to fail."""
+    if "$(" in command or "`" in command or "<(" in command:
+        return command
+    scoped = command
+    for stages in _pipelines(command):
+        if any(parses_json(stage) for stage in stages):
+            continue
+        if not all(_is_inspection_only_stage(stage) for stage in stages):
+            continue
+        for stage in stages:
+            scoped = scoped.replace(stage, " ", 1)
+    return scoped
+
+
 def scripted_state_read_target(command):
     """The `(kind, store, inspector)` a scripted JSON parse of codeyam state
     touches, or None when `command` is not one.
@@ -5265,12 +5333,18 @@ def scripted_state_read_target(command):
     them: `elide_heredoc_bodies` keeps an EXECUTING body (`python3 - <<'EOF'`
     is a program) and drops a DATA one, so a commit message that quotes a
     `json.load(...)` line as prose — this feature's own plan file does — is
-    not read as a parse of anything."""
+    not read as a parse of anything.
+
+    Only the pipelines that could feed the parse are judged
+    (`without_standalone_inspections`): an `ls`/`grep` of a store elsewhere in
+    the same compound is co-occurrence, which never refuses — and so never
+    counts toward the recurring-guardrail ordinal either."""
     command = elide_heredoc_bodies(command)
     if is_inspector_invocation(command):
         return None
     if not parses_json(command):
         return None
+    command = without_standalone_inspections(command)
     if parses_command_output_transcript(command):
         return ("command-output", _COMMAND_OUTPUT_STORE, None)
     if parses_harness_tool_result(command):
