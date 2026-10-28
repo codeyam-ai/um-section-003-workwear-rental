@@ -31,7 +31,7 @@ Every mockup shows the same content: Maya's first box arriving Thursday (navy bl
 5. **Week planner, clean grid.** A Swiss-style grid with an outfit for each day of the first week, plus emerald dress-code checks.
 6. **Pinstripe, calm and centered.** A flannel-grey pinstripe background, centered and airy, with dusty-mauve accents.
 
-None of the six has been locked in yet.
+**Chosen: #3, Plum poster, big type.** Its tokens are in `design_system.md`.
 
 ## How the images work
 
