@@ -1,5 +1,7 @@
 # Design exploration notes
 
+University of Michigan, section 003 (the 4th presentation in that section).
+
 Working name: **Lapel**, a clothing-rental membership for new grads building a work wardrobe. "Lapel" and the brand names in the mockups (Arden & Vale, Kestrel, Noor Atelier, Halden, Harlow & Pierce) are placeholders.
 
 ## Brief
@@ -25,8 +27,7 @@ Every mockup shows the same content: Maya's first box arriving Thursday (navy bl
 
 1. **Magazine, warm and serif.** Follows the catalog's Editorial system: parchment background, serif type and burgundy accents. The safest option.
 2. **Pinboard of picks.** White, with a staggered grid of clothes, filter chips and cobalt accents.
-3. **Plum poster, big type.** Deep plum and saffron, with oversized condensed type and slices that open into the picks. **Current favorite (the repo is named after it).**
-4. **Evening, photo-led.** Dark, opening on a full-bleed try-on photo, with champagne accents and a grid of picks.
+3. **Plum poster, big type.** Deep plum and saffron, with oversized condensed type and slices that open into the picks.4. **Evening, photo-led.** Dark, opening on a full-bleed try-on photo, with champagne accents and a grid of picks.
 5. **Week planner, clean grid.** A Swiss-style grid with an outfit for each day of the first week, plus emerald dress-code checks.
 6. **Pinstripe, calm and centered.** A flannel-grey pinstripe background, centered and airy, with dusty-mauve accents.
 
