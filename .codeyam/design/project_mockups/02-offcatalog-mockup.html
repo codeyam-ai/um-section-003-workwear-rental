@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="codeyam-viewport" content="mobile">
+<title>Pinboard of picks</title>
+<style>
+:root{
+  --canvas:#ffffff; --surface:#f2f3f6; --surface-2:#e7e9ef;
+  --ink:#1c1b22; --body:#45444d; --mute:#6d6c76; --hair:#dcdde3;
+  --accent:#2b45c4; --accent-ink:#ffffff; --accent-soft:#e8ecfb;
+  --ok:#1f6b4a; --ok-soft:#e3f1ea;
+  --tile-dark:#1c1b22; --on-dark:#ffffff; --on-dark-mute:rgba(255,255,255,.72);
+  --r-img:16px; --r-pill:999px;
+  --font:'Avenir Next','Avenir','Nunito Sans','Segoe UI',system-ui,'Liberation Sans',sans-serif;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --canvas:#121217; --surface:#1d1d24; --surface-2:#272731;
+  --ink:#f3f3f6; --body:#c9c9d2; --mute:#9a9aa6; --hair:#30303a;
+  --accent:#8fa2ff; --accent-ink:#0f1330; --accent-soft:#232a4d;
+  --ok:#7fcfa6; --ok-soft:#18302a;
+  --tile-dark:#2a2a35; --on-dark:#ffffff; --on-dark-mute:rgba(255,255,255,.72);
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--canvas)}
+body{font-family:var(--font);color:var(--body);-webkit-font-smoothing:antialiased;font-size:15px;
+  padding:calc(50px + env(safe-area-inset-top)) 0 calc(88px + env(safe-area-inset-bottom))}
+h1,h2,h3{color:var(--ink);text-wrap:balance}
+a{color:inherit;text-decoration:none}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+svg{display:block}
+.top{display:flex;align-items:center;gap:10px;padding:4px 16px 12px}
+.brand{font-weight:700;font-size:22px;letter-spacing:-.02em;color:var(--ink)}
+.search{flex:1;min-width:0;display:flex;align-items:center;gap:8px;height:42px;padding:0 14px;border-radius:var(--r-pill);background:var(--surface);color:var(--mute);font-size:14px;white-space:nowrap;overflow:hidden}
+.search span{overflow:hidden;text-overflow:ellipsis}
+.me{width:38px;height:38px;border-radius:50%;flex:none}
+.chips{display:flex;gap:8px;padding:0 16px 14px;overflow:hidden}
+.chip{flex:none;height:36px;padding:0 16px;border-radius:var(--r-pill);background:var(--surface);color:var(--ink);font-size:14px;font-weight:600;display:flex;align-items:center;border:0;font-family:inherit}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--canvas)}
+
+/* cascading card deck: the box */
+.deck{position:relative;margin:4px 16px 0;height:206px}
+.deck .card{position:absolute;border-radius:20px}
+.deck .c3{left:34px;right:0;top:0;height:150px;transform:rotate(4deg);transform-origin:bottom right}
+.deck .c2{left:18px;right:12px;top:10px;height:150px;transform:rotate(2deg);transform-origin:bottom right}
+.deck .front{left:0;right:24px;top:26px;bottom:0;background:var(--ink);color:var(--canvas);padding:18px;display:grid;grid-template-columns:1fr 92px;gap:14px;box-shadow:0 12px 28px -12px rgba(28,27,34,.45)}
+.front h1{color:var(--canvas);font-size:24px;line-height:1.1;letter-spacing:-.02em;font-weight:700}
+.front p{font-size:14px;color:var(--on-dark-mute);margin-top:6px;line-height:1.35}
+.front .ph{border-radius:12px;height:100%}
+.front .go{margin-top:14px;display:inline-flex;height:38px;padding:0 16px;align-items:center;border-radius:var(--r-pill);background:var(--canvas);color:var(--ink);font-weight:600;font-size:14px}
+
+/* dress code */
+.code{margin:16px 16px 0;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--ok-soft)}
+.code .ic{width:34px;height:34px;border-radius:50%;background:var(--ok);display:grid;place-items:center;flex:none}
+.code div{min-width:0;flex:1}
+.code b{display:block;color:var(--ink);font-size:14px}
+.code small{font-size:13px;color:var(--ok);font-weight:600}
+.code a{font-size:13px;font-weight:700;color:var(--ok);white-space:nowrap}
+
+/* marquee strip of deals */
+.deals-h{display:flex;justify-content:space-between;align-items:baseline;padding:22px 16px 10px}
+.deals-h h2{font-size:18px;letter-spacing:-.01em}
+.deals-h a,.feed-h a{font-size:14px;font-weight:600;color:var(--accent)}
+.marquee{display:flex;gap:10px;padding:0 16px;overflow:hidden;mask-image:linear-gradient(90deg,#000 85%,transparent)}
+.deal{flex:none;display:flex;align-items:center;gap:10px;height:52px;padding:0 16px 0 6px;border:1px solid var(--hair);border-radius:var(--r-pill)}
+.deal .mono{width:40px;height:40px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;font-weight:700;color:var(--ink);font-size:14px}
+.deal b{display:block;color:var(--ink);font-size:14px}
+.deal span{font-size:13px;color:var(--accent);font-weight:600}
+
+/* staggered masonry */
+.feed-h{display:flex;justify-content:space-between;align-items:baseline;padding:24px 16px 12px}
+.feed-h h2{font-size:22px;letter-spacing:-.02em}
+.masonry{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.pin .ph{border-radius:var(--r-img);width:100%}
+.pin h3{font-size:14px;font-weight:600;margin-top:8px;line-height:1.25}
+.pin .meta{font-size:13px;color:var(--mute);margin-top:2px;font-variant-numeric:tabular-nums}
+.pin .meta b{color:var(--ink);font-weight:600}
+.h-tall{height:236px}.h-mid{height:188px}.h-short{height:150px}
+.save{position:relative}
+.save .heart{position:absolute;right:8px;bottom:8px;width:34px;height:34px;border-radius:50%;background:var(--canvas);display:grid;place-items:center;border:0;cursor:pointer;color:var(--ink)}
+.tile-try{background:var(--tile-dark);border-radius:var(--r-img);padding:10px;color:var(--on-dark)}
+.tile-try .ph{height:176px;border-radius:10px}
+.tile-try h3{color:var(--on-dark);font-size:16px;margin:10px 4px 4px;line-height:1.2}
+.tile-try a{display:flex;justify-content:center;align-items:center;height:38px;margin:10px 0 2px;border-radius:var(--r-pill);background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:14px}
+.tile-board{background:var(--surface);border-radius:var(--r-img);padding:10px}
+.board{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:64px 64px;gap:4px;border-radius:10px;overflow:hidden}
+.board .b1{grid-row:span 2}
+.tile-board h3{font-size:14px;margin:10px 4px 0}
+.tile-board p{font-size:13px;color:var(--mute);margin:2px 4px 2px}
+.tile-plan{border:1px solid var(--hair);border-radius:var(--r-img);padding:14px}
+.tile-plan .n{font-size:34px;font-weight:700;color:var(--ink);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.tile-plan .n small{font-size:16px;color:var(--mute);font-weight:500}
+.tile-plan p{font-size:13px;line-height:1.35}
+.tile-plan a{display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:var(--accent)}
+
+.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:var(--canvas);border-top:1px solid var(--hair);padding:8px 6px calc(10px + env(safe-area-inset-bottom))}
+.tabs a{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:600;color:var(--mute);min-width:60px;padding-top:4px}
+.tabs a[aria-current]{color:var(--ink)}
+.tabs .tryon{color:var(--accent)}
+@media (hover:hover){.deal:hover,.chip:hover{background:var(--surface-2)}.pin:hover .ph{filter:brightness(.94)}}
+@media (prefers-reduced-motion:no-preference){.pin .ph{transition:filter .2s ease}}
+.p-deck1{background-image:url('https://loremflickr.com/600/800/navy,blazer?lock=21'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2RmZTNlYyIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2QxZDVkZCIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNOTggODQgTDE1MCA2MiBMMjAyIDg0IEwyMzggMTE4IEwyNDYgMzAwIEwyMTQgMzA0IEwyMDYgMTUwIEwyMDQgMzQwIEw5NiAzNDAgTDk0IDE1MCBMODYgMzA0IEw1NCAzMDAgTDYyIDExOCBaIiBmaWxsPSIjMjYzMjRmIi8+PHBhdGggZD0iTTE1MCA2NCBMMTI0IDg4IEwxMzggMTc2IEwxNTAgMjE0IFoiIGZpbGw9IiMxYjI0MzgiLz48cGF0aCBkPSJNMTUwIDY0IEwxNzYgODggTDE2MiAxNzYgTDE1MCAyMTQgWiIgZmlsbD0iIzFiMjQzOCIvPjxwYXRoIGQ9Ik0xMzYgNzQgTDE1MCA2NCBMMTY0IDc0IEwxNTAgMTIwIFoiIGZpbGw9IiNmMWVkZTYiLz48Y2lyY2xlIGN4PSIxNTAiIGN5PSIyNDAiIHI9IjUiIGZpbGw9IiMxYjI0MzgiLz48Y2lyY2xlIGN4PSIxNTAiIGN5PSIyNzAiIHI9IjUiIGZpbGw9IiMxYjI0MzgiLz48cGF0aCBkPSJNMTEwIDI4MCBMMTM2IDI4MCIgc3Ryb2tlPSIjMWIyNDM4IiBzdHJva2Utd2lkdGg9IjMiLz48cGF0aCBkPSJNMTY0IDI4MCBMMTkwIDI4MCIgc3Ryb2tlPSIjMWIyNDM4IiBzdHJva2Utd2lkdGg9IjMiLz48L2c+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9InVybCgjbCkiLz48L3N2Zz4=');background-size:cover;background-position:center;background-color:#dfe3ec}
+.p-deck2{background-image:url('https://loremflickr.com/600/800/trousers,beige?lock=22'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2U3ZThlZSIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2Q5ZGFkZiIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cmVjdCB4PSIxMDQiIHk9IjgwIiB3aWR0aD0iOTIiIGhlaWdodD0iMTgiIHJ4PSIyIiBmaWxsPSIjODU3YzZkIi8+PHBhdGggZD0iTTEwNCA5OCBMMTk2IDk4IEwyMTAgMzcyIEwxNjIgMzcyIEwxNTAgMTcwIEwxMzggMzcyIEw5MCAzNzIgWiIgZmlsbD0iI2I5YWQ5OCIvPjxwYXRoIGQ9Ik0xMjQgMTEwIEwxMTQgMzcyIE0xNzYgMTEwIEwxODYgMzcyIiBzdHJva2U9IiM4NTdjNmQiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iLjUiLz48L2c+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9InVybCgjbCkiLz48L3N2Zz4=');background-size:cover;background-position:center;background-color:#e7e8ee}
+.p-deck3{background-image:url('https://loremflickr.com/600/800/silk,blouse,ivory?lock=23'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2NmZDZlNCIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2MyYzlkNiIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMTAwIDg0IEwxMzIgNjggTDE1MCA4MiBMMTY4IDY4IEwyMDAgODQgTDI0MCAxNTYgTDIxNCAxNzAgTDE5OCAxMzggTDIwMCAzMzAgTDEwMCAzMzAgTDEwMiAxMzggTDg2IDE3MCBMNjAgMTU2IFoiIGZpbGw9IiNmM2VlZTQiLz48cGF0aCBkPSJNMTMyIDY4IEwxNTAgODIgTDE0MCAxMDAgWiBNMTY4IDY4IEwxNTAgODIgTDE2MCAxMDAgWiIgZmlsbD0iI2FlYWJhNCIvPjxwYXRoIGQ9Ik0xNTAgODQgTDE1MCAzMzAiIHN0cm9rZT0iI2FlYWJhNCIgc3Ryb2tlLXdpZHRoPSIyIi8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMTIwIiByPSIzIiBmaWxsPSIjYWVhYmE0Ii8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMTcwIiByPSIzIiBmaWxsPSIjYWVhYmE0Ii8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMjIwIiByPSIzIiBmaWxsPSIjYWVhYmE0Ii8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMjcwIiByPSIzIiBmaWxsPSIjYWVhYmE0Ii8+PC9nPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iNDAwIiBmaWxsPSJ1cmwoI2wpIi8+PC9zdmc+');background-size:cover;background-position:center;background-color:#cfd6e4}
+.p-pick1{background-image:url('https://loremflickr.com/600/800/tweed,jacket,woman?lock=24'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2U5ZWFlZiIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2RiZGJlMCIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNOTggODQgTDE1MCA2MiBMMjAyIDg0IEwyMzggMTE4IEwyNDYgMzAwIEwyMTQgMzA0IEwyMDYgMTUwIEwyMDQgMzQwIEw5NiAzNDAgTDk0IDE1MCBMODYgMzA0IEw1NCAzMDAgTDYyIDExOCBaIiBmaWxsPSIjNDY0NDRiIi8+PHBhdGggZD0iTTE1MCA2NCBMMTI0IDg4IEwxMzggMTc2IEwxNTAgMjE0IFoiIGZpbGw9IiMzMjMwMzYiLz48cGF0aCBkPSJNMTUwIDY0IEwxNzYgODggTDE2MiAxNzYgTDE1MCAyMTQgWiIgZmlsbD0iIzMyMzAzNiIvPjxwYXRoIGQ9Ik0xMzYgNzQgTDE1MCA2NCBMMTY0IDc0IEwxNTAgMTIwIFoiIGZpbGw9IiNmMWVkZTYiLz48Y2lyY2xlIGN4PSIxNTAiIGN5PSIyNDAiIHI9IjUiIGZpbGw9IiMzMjMwMzYiLz48Y2lyY2xlIGN4PSIxNTAiIGN5PSIyNzAiIHI9IjUiIGZpbGw9IiMzMjMwMzYiLz48cGF0aCBkPSJNMTEwIDI4MCBMMTM2IDI4MCIgc3Ryb2tlPSIjMzIzMDM2IiBzdHJva2Utd2lkdGg9IjMiLz48cGF0aCBkPSJNMTY0IDI4MCBMMTkwIDI4MCIgc3Ryb2tlPSIjMzIzMDM2IiBzdHJva2Utd2lkdGg9IjMiLz48L2c+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9InVybCgjbCkiLz48L3N2Zz4=');background-size:cover;background-position:center;background-color:#e9eaef}
+.p-pick2{background-image:url('https://loremflickr.com/600/800/knit,dress,green?lock=25'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2UzZTdlNCIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2Q1ZDlkNiIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMTI0IDgyIEwxMjggNjYgTTE3NiA4MiBMMTcyIDY2IiBzdHJva2U9IiMyMTM1MjkiIHN0cm9rZS13aWR0aD0iNSIvPjxwYXRoIGQ9Ik0xMTggODIgTDE4MiA4MiBMMTkwIDE1MCBMMTc0IDE5MCBMMjE0IDM3MiBMODYgMzcyIEwxMjYgMTkwIEwxMTAgMTUwIFoiIGZpbGw9IiMyZjRhM2EiLz48cGF0aCBkPSJNMTI2IDE5MCBMMTc0IDE5MCIgc3Ryb2tlPSIjMjEzNTI5IiBzdHJva2Utd2lkdGg9IjYiLz48L2c+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9InVybCgjbCkiLz48L3N2Zz4=');background-size:cover;background-position:center;background-color:#e3e7e4}
+.p-pick3{background-image:url('https://loremflickr.com/600/800/tailored,trousers,woman?lock=26'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2VlZWNlOCIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2RmZGRkYSIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cmVjdCB4PSIxMDQiIHk9IjgwIiB3aWR0aD0iOTIiIGhlaWdodD0iMTgiIHJ4PSIyIiBmaWxsPSIjNjM1NzRjIi8+PHBhdGggZD0iTTEwNCA5OCBMMTk2IDk4IEwyMTAgMzcyIEwxNjIgMzcyIEwxNTAgMTcwIEwxMzggMzcyIEw5MCAzNzIgWiIgZmlsbD0iIzhhN2E2YSIvPjxwYXRoIGQ9Ik0xMjQgMTEwIEwxMTQgMzcyIE0xNzYgMTEwIEwxODYgMzcyIiBzdHJva2U9IiM2MzU3NGMiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iLjUiLz48L2c+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9InVybCgjbCkiLz48L3N2Zz4=');background-size:cover;background-position:center;background-color:#eeece8}
+.p-pick4{background-image:url('https://loremflickr.com/600/800/oxford,shirt,woman?lock=27'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2U2ZTlmMCIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2Q4ZGJlMSIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMTAwIDg0IEwxMzIgNjggTDE1MCA4MiBMMTY4IDY4IEwyMDAgODQgTDI0MCAxNTYgTDIxNCAxNzAgTDE5OCAxMzggTDIwMCAzMzAgTDEwMCAzMzAgTDEwMiAxMzggTDg2IDE3MCBMNjAgMTU2IFoiIGZpbGw9IiNjOWQ2ZTYiLz48cGF0aCBkPSJNMTMyIDY4IEwxNTAgODIgTDE0MCAxMDAgWiBNMTY4IDY4IEwxNTAgODIgTDE2MCAxMDAgWiIgZmlsbD0iIzkwOWFhNSIvPjxwYXRoIGQ9Ik0xNTAgODQgTDE1MCAzMzAiIHN0cm9rZT0iIzkwOWFhNSIgc3Ryb2tlLXdpZHRoPSIyIi8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMTIwIiByPSIzIiBmaWxsPSIjOTA5YWE1Ii8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMTcwIiByPSIzIiBmaWxsPSIjOTA5YWE1Ii8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMjIwIiByPSIzIiBmaWxsPSIjOTA5YWE1Ii8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMjcwIiByPSIzIiBmaWxsPSIjOTA5YWE1Ii8+PC9nPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iNDAwIiBmaWxsPSJ1cmwoI2wpIi8+PC9zdmc+');background-size:cover;background-position:center;background-color:#e6e9f0}
+.p-tryon{background-image:url('https://loremflickr.com/600/800/woman,blazer,portrait?lock=28'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiNjOWQxZTMiLz48cGF0aCBkPSJNODYgMTUwIFE4NCA3MCAxNTAgNjYgUTIxOCA3MCAyMTQgMTUwIEwyMjIgMzAwIEw3OCAzMDAgWiIgZmlsbD0iIzJiMWQxNyIvPjxyZWN0IHg9IjEzMiIgeT0iMjE2IiB3aWR0aD0iMzYiIGhlaWdodD0iNDAiIGZpbGw9IiNiNDhhNmYiLz48ZWxsaXBzZSBjeD0iMTUwIiBjeT0iMTY4IiByeD0iNDQiIHJ5PSI1NiIgZmlsbD0iI2M5OWE3YyIvPjxwYXRoIGQ9Ik0xMDYgMTUwIFExMjAgOTYgMTYwIDEwNCBRMTkyIDExMiAxOTYgMTUwIFExOTYgMTEyIDE1MCA5MiBRMTA0IDEwMCAxMDYgMTUwIFoiIGZpbGw9IiMyYjFkMTciLz48cGF0aCBkPSJNMzAgNDAwIFEzNCAyNzAgMTUwIDI1MiBRMjY2IDI3MCAyNzAgNDAwIFoiIGZpbGw9IiMyNjMyNGYiLz48cGF0aCBkPSJNMTI2IDI1NCBMMTUwIDMwMCBMMTc0IDI1NCBMMTYyIDI1MiBMMTUwIDI3MCBMMTM4IDI1MiBaIiBmaWxsPSIjZjFlZGU2Ii8+PHBhdGggZD0iTTEyNiAyNTQgTDExMiAyNjggTDE1MCAzNjAgTDEzOCAzMDAgWiBNMTc0IDI1NCBMMTg4IDI2OCBMMTUwIDM2MCBMMTYyIDMwMCBaIiBmaWxsPSIjMWEyMzM3Ii8+PGNpcmNsZSBjeD0iMTUwIiBjeT0iMzMwIiByPSI0IiBmaWxsPSIjMWEyMzM3Ii8+PC9zdmc+');background-size:cover;background-position:center;background-color:#c9d1e3}
+.p-board1{background-image:url('https://loremflickr.com/600/800/office,outfit,woman?lock=29'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2VjZTdlMSIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2RkZDlkMyIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNOTggODQgTDE1MCA2MiBMMjAyIDg0IEwyNDAgMTIwIEwyNTAgMzMwIEwyMTggMzM0IEwyMDggMTYwIEwyMTQgMzgwIEw4NiAzODAgTDkyIDE2MCBMODIgMzM0IEw1MCAzMzAgTDYwIDEyMCBaIiBmaWxsPSIjYTQ4MjVmIi8+PHBhdGggZD0iTTE1MCA2NCBMMTE4IDkyIEwxNDAgMjAwIEwxNTAgMzgwIFoiIGZpbGw9IiM3NjVkNDQiLz48cGF0aCBkPSJNMTUwIDY0IEwxODIgOTIgTDE2MCAyMDAgTDE1MCAzODAgWiIgZmlsbD0iIzk2Nzc1NyIvPjxwYXRoIGQ9Ik05NiAyMzAgTDIwNCAyMzAiIHN0cm9rZT0iIzc2NWQ0NCIgc3Ryb2tlLXdpZHRoPSIxMCIvPjwvZz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0idXJsKCNsKSIvPjwvc3ZnPg==');background-size:cover;background-position:center;background-color:#ece7e1}
+.p-board2{background-image:url('https://loremflickr.com/600/800/workwear,style?lock=30'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2UyZTVlYSIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2Q0ZDdkYiIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNOTYgODYgTDE1MCA3NCBMMjA0IDg2IEwyNDIgMTcwIEwyNDYgMzAwIEwyMTggMzA0IEwyMDYgMTgwIEwyMDYgMzMwIEw5NCAzMzAgTDk0IDE4MCBMODIgMzA0IEw1NCAzMDAgTDU4IDE3MCBaIiBmaWxsPSIjN2E4Nzk2Ii8+PGVsbGlwc2UgY3g9IjE1MCIgY3k9Ijg0IiByeD0iMjYiIHJ5PSIxMCIgZmlsbD0iIzU3NjE2YyIvPjxwYXRoIGQ9Ik05NCAzMTYgTDIwNiAzMTYgTTU0IDI5MiBMODIgMjkyIE0yMTggMjkyIEwyNDYgMjkyIiBzdHJva2U9IiM1NzYxNmMiIHN0cm9rZS13aWR0aD0iOCIvPjwvZz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0idXJsKCNsKSIvPjwvc3ZnPg==');background-size:cover;background-position:center;background-color:#e2e5ea}
+.p-board3{background-image:url('https://loremflickr.com/600/800/loafers,fashion?lock=31'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2U5ZTZlMiIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2RiZDhkNCIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMTAwIDg0IEwxMzIgNjggTDE1MCA4MiBMMTY4IDY4IEwyMDAgODQgTDI0MCAxNTYgTDIxNCAxNzAgTDE5OCAxMzggTDIwMCAzMzAgTDEwMCAzMzAgTDEwMiAxMzggTDg2IDE3MCBMNjAgMTU2IFoiIGZpbGw9IiMxZjFmMjQiLz48cGF0aCBkPSJNMTMyIDY4IEwxNTAgODIgTDE0MCAxMDAgWiBNMTY4IDY4IEwxNTAgODIgTDE2MCAxMDAgWiIgZmlsbD0iIzE2MTYxOSIvPjxwYXRoIGQ9Ik0xNTAgODQgTDE1MCAzMzAiIHN0cm9rZT0iIzE2MTYxOSIgc3Ryb2tlLXdpZHRoPSIyIi8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMTIwIiByPSIzIiBmaWxsPSIjMTYxNjE5Ii8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMTcwIiByPSIzIiBmaWxsPSIjMTYxNjE5Ii8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMjIwIiByPSIzIiBmaWxsPSIjMTYxNjE5Ii8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMjcwIiByPSIzIiBmaWxsPSIjMTYxNjE5Ii8+PC9nPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iNDAwIiBmaWxsPSJ1cmwoI2wpIi8+PC9zdmc+');background-size:cover;background-position:center;background-color:#e9e6e2}
+
+</style>
+</head>
+<body>
+<header class="top">
+  <span class="brand" translate="no">Lapel</span>
+  <a class="search" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Search blazers, brands, your closet</span></a>
+  <a href="#" aria-label="Your account"><div class="me p-tryon" role="img" aria-label="Maya"></div></a>
+</header>
+
+<nav class="chips" aria-label="Filters">
+  <button class="chip" aria-pressed="true">For you</button>
+  <button class="chip" aria-pressed="false">Friday denim</button>
+  <button class="chip" aria-pressed="false">Under $20</button>
+  <button class="chip" aria-pressed="false">From your board</button>
+</nav>
+
+<section class="deck" aria-label="Your next box">
+  <div class="card c3 p-deck3" aria-hidden="true"></div>
+  <div class="card c2 p-deck2" aria-hidden="true"></div>
+  <div class="card front">
+    <div>
+      <h1>Your first box lands tomorrow</h1>
+      <p>Navy blazer, wide-leg trouser and silk shell. Five days until your first Monday.</p>
+      <a class="go" href="#">Track box</a>
+    </div>
+    <div class="ph p-deck1" role="img" aria-label="Navy wool-blend blazer"></div>
+  </div>
+</section>
+
+<section class="code" aria-label="Your dress code">
+  <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
+  <div><b>Business casual at <span translate="no">Harlow &amp; Pierce</span></b><small>New since Oct 21: denim on Fridays</small></div>
+  <a href="#">Details</a>
+</section>
+
+<div class="deals-h"><h2>Brands on sale</h2><a href="#">All deals</a></div>
+<div class="marquee">
+  <a class="deal" href="#"><span class="mono" aria-hidden="true">AV</span><span><b translate="no">Arden &amp; Vale</b><span>30% off to buy</span></span></a>
+  <a class="deal" href="#"><span class="mono" aria-hidden="true">K</span><span><b translate="no">Kestrel</b><span>25% off suiting</span></span></a>
+  <a class="deal" href="#"><span class="mono" aria-hidden="true">H</span><span><b translate="no">Halden</b><span>Members 20% off</span></span></a>
+</div>
+
+<div class="feed-h"><h2>Picked for your first week</h2><a href="#">See all</a></div>
+<div class="masonry">
+  <div class="col">
+    <article class="pin save">
+      <div class="ph h-tall p-pick1" role="img" aria-label="Cropped tweed jacket in charcoal"></div>
+      <button class="heart" aria-label="Save cropped tweed jacket"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg></button>
+      <h3>Cropped tweed jacket</h3><div class="meta"><span translate="no">Halden</span>, rent <b>$24</b></div>
+    </article>
+    <div class="tile-try">
+      <div class="ph p-tryon" role="img" aria-label="Your photo wearing the navy blazer"></div>
+      <h3>See the navy blazer on you</h3>
+      <a href="#">Try it on</a>
+    </div>
+    <article class="pin">
+      <div class="ph h-short p-pick4" role="img" aria-label="Poplin button-down in pale blue"></div>
+      <h3>Poplin button-down</h3><div class="meta"><span translate="no">Arden &amp; Vale</span>, rent <b>$12</b></div>
+    </article>
+  </div>
+  <div class="col">
+    <article class="pin">
+      <div class="ph h-mid p-pick2" role="img" aria-label="Knit midi dress in forest green"></div>
+      <h3>Knit midi dress</h3><div class="meta"><span translate="no">Noor Atelier</span>, rent <b>$22</b></div>
+    </article>
+    <div class="tile-board">
+      <div class="board" aria-hidden="true"><div class="b1 p-board1"></div><div class="p-board2"></div><div class="p-board3"></div></div>
+      <h3>From your “First job” board</h3><p>18 pins, 7 matches to rent</p>
+    </div>
+    <article class="pin">
+      <div class="ph h-tall p-pick3" role="img" aria-label="Straight-leg trouser in taupe"></div>
+      <h3>Straight-leg trouser</h3><div class="meta"><span translate="no">Kestrel</span>, rent <b>$16</b></div>
+    </article>
+    <div class="tile-plan">
+      <div class="n">2 <small>of 4 swaps left</small></div>
+      <p>Essentials plan, resets November 1.</p>
+      <a href="#">Compare plans</a>
+    </div>
+  </div>
+</div>
+
+<nav class="tabs" aria-label="Main">
+  <a href="#" aria-current="page"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3 3 10v11h6v-6h6v6h6V10z"/></svg>Home</a>
+  <a href="#"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Browse</a>
+  <a href="#" class="tryon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 4 4 7l2 4 2-1v10h8V10l2 1 2-4-4-3c-.5 1.5-2 2.5-4 2.5S8.5 5.5 8 4Z"/></svg>Try on</a>
+  <a href="#"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5a2 2 0 1 1 2 2c-1 0-2 .7-2 1.7V9l9 7H3l9-7"/><path d="M3 16h18"/></svg>Closet</a>
+  <a href="#"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6"/></svg>You</a>
+</nav>
+</body>
+</html>

@@ -1,0 +1,161 @@
+{
+  "$comment": "Per-developer settings (port, provider, proxy ports, startCommand, etc.) belong in editor.local.json. That file is gitignored and is deep-merged on top of this one at load time. Changing `provider` after scaffold does NOT install that agent's surface — re-run `codeyam-editor editor install-hooks` (or `codeyam-editor init --provider <name>`) to install it. See CLAUDE.md or run `codeyam-editor editor config-show` to inspect the effective config.",
+  "apps": [],
+  "audit": {
+    "allowedDocumentationOnlySlugs": [
+      "post-merge-drift-sweep"
+    ],
+    "branchBaseRef": "main",
+    "coverageBootstrap": {
+      "enabled": true
+    },
+    "itemShape": {
+      "changeWithoutVerify": "note",
+      "compound": "warning",
+      "vague": "warning"
+    },
+    "scenarioFreshnessDays": 14,
+    "sharedBaselineMinScenarios": 10,
+    "sizeBudget": {
+      "maxEntityLines": 150,
+      "maxFileLines": 500,
+      "severity": "warning"
+    },
+    "stepBudget": {
+      "maxChecklistItems": 6,
+      "maxLines": 80,
+      "severity": "warning"
+    },
+    "suppressions": {
+      "ratchet": true,
+      "severity": "warning"
+    },
+    "testNamingConventions": {}
+  },
+  "catalogAutoAdd": {
+    "allow": [],
+    "deny": []
+  },
+  "cleanup": {
+    "completedPlanMinAgeDays": 90,
+    "completedPlanRetention": 500,
+    "logCompress": true,
+    "logDeleteDays": 30,
+    "logRotateDays": 7,
+    "screenshotPruneOrphans": true,
+    "tmpDeleteHours": 24
+  },
+  "coverageThresholds": {
+    "global": {
+      "minLinePercent": 90.0
+    }
+  },
+  "database": null,
+  "deviceScaleFactor": 2.0,
+  "env": {},
+  "files": {
+    "eventLogMaxBytes": null,
+    "journalShardEntries": null,
+    "logKeepRotated": null,
+    "textLogMaxBytes": null
+  },
+  "formatters": [],
+  "git": {
+    "commitQueue": {
+      "enabled": true,
+      "headAutoReclaimEnabled": true,
+      "heartbeatIntervalSec": 15,
+      "machineAliveHookTimeoutMs": 5000,
+      "maxHookPrunePerSweep": 10,
+      "maxProgressStallSec": 900,
+      "pollIntervalMs": 2000,
+      "rehearseAtPosition": 2,
+      "serverHeartbeatIntervalSec": 60,
+      "stallEscalationSec": 1800,
+      "surfaceWaitAfterSec": 1800,
+      "waitTimeoutSec": 300,
+      "yieldOnQuestionSec": 600
+    },
+    "planClaims": {
+      "enabled": true,
+      "fetchIntervalSec": 3,
+      "livenessIntervalSec": 120
+    }
+  },
+  "hooks": {},
+  "port": 3000,
+  "projectDescription": "Build a rent the runway for workwear. \n\nSubsription-based rental app for work clothing. \n\nThis app is for new graduates entering the workforce. They’re younger men and women building out their work wardrobe. \n\nImagine users on both their phone and computer.\n\nIt’d also be helpful to see deals from brands (see brands that are on sale so they could potentially rent or purchase clothing). \n\nUsers should be able to upload a picture of themselves and be able to “try on” clothes digitally to be able to virtually try on an outfit or piece of clothing before they commit to renting or buying it.\n\nAbility to add current clothing and style outfits; ability to upload photos or search clothes they have and mark as currently owned.\n\nBeing able to look up their employer’s dress code and make sure their professional attire is ‘on brand’ for their company’s policy. And if there’s changes to policy, accommodate it.\n\nHave a subscription with membership tiers with different benefits so they can choose a tier appropriate.\n\nAbility to upload inspiration (e.g. a pinterest board). \n\nMake it an easy and intuitive interface. Do not want the experience  to be complex or overwhelming. \n\nHave a modern, potentially feminine aesthetic that still feels corporate and put together. ",
+  "proxy": {
+    "controlPort": 14303,
+    "dbPort": 14205,
+    "httpPort": 14204,
+    "httpsPassthrough": [
+      "crates.io",
+      "static.crates.io",
+      "index.crates.io",
+      "registry.npmjs.org",
+      "pypi.org",
+      "files.pythonhosted.org",
+      "proxy.golang.org",
+      "sum.golang.org",
+      "storage.googleapis.com",
+      "cdn.playwright.dev",
+      "rubygems.org",
+      "github.com",
+      "codeload.github.com",
+      "objects.githubusercontent.com"
+    ],
+    "httpsPreview": false
+  },
+  "runnerTimeout": {
+    "changedFanoutMaxExtraSeconds": 1800,
+    "changedFanoutPerUnitSeconds": 180,
+    "changedFanoutThreshold": 2,
+    "floorSeconds": 900,
+    "headroomSeconds": 90,
+    "mode": "auto"
+  },
+  "scenarios": {
+    "dir": ".codeyam/scenarios"
+  },
+  "screenSizes": {},
+  "server": {
+    "access": {
+      "mode": "loopback"
+    },
+    "autoRestartOnStaleBinary": true,
+    "devServerMaxRssMb": null,
+    "environment": "local",
+    "maxRssMb": 6144
+  },
+  "setupBrowserEnabled": false,
+  "silenceHookStderr": false,
+  "startCommand": "",
+  "staticChecks": [],
+  "testCacheIgnorePatterns": [],
+  "testParallelism": {
+    "loadGuard": true
+  },
+  "testPartitions": [],
+  "testRunners": [],
+  "toolchainPaths": [],
+  "workflow": {
+    "audience": null,
+    "checkIns": {
+      "hardeningCompleted": {
+        "autoAction": "commit",
+        "pause": true
+      },
+      "planAccepted": {
+        "pause": true
+      },
+      "prototypeCompleted": {
+        "pause": true
+      },
+      "push": {
+        "pause": true
+      }
+    },
+    "contextResetBefore": null
+  }
+}

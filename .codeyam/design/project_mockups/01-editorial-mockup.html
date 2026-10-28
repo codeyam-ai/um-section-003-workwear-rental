@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="codeyam-viewport" content="mobile">
+<title>Morning edition, serif</title>
+<style>
+:root{
+  --bg-base:#f4efe4; --bg-surface:#ede5d6; --bg-muted:#e0d5c0;
+  --text-primary:#1c1409; --text-secondary:#5a4f3f; --text-muted:#7d705e;
+  --border:#c9bbaa; --burgundy:#7a1e1e; --sage:#3e5145; --gold:#8f6d22;
+  --sage-tint:rgba(62,81,69,.06); --gold-tint:rgba(143,109,34,.06);
+  --font-display:'Cormorant Garamond','Cormorant',Garamond,'EB Garamond',Georgia,'Bitstream Charter',serif;
+  --font-body:'EB Garamond',Garamond,Georgia,'Bitstream Charter',serif;
+  --radius:0px; --s1:4px; --s2:8px; --s3:16px; --s4:24px; --s5:40px; --s6:64px;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg-base:#17130d; --bg-surface:#211b13; --bg-muted:#2d251a;
+  --text-primary:#f1e9da; --text-secondary:#c9bca6; --text-muted:#9c8f7a;
+  --border:#4a3f30; --burgundy:#d68a7f; --sage:#9fbaa6; --gold:#d6b46a;
+  --sage-tint:rgba(159,186,166,.08); --gold-tint:rgba(214,180,106,.08);
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg-base)}
+body{font-family:var(--font-body);color:var(--text-secondary);-webkit-font-smoothing:antialiased;
+  padding:calc(50px + env(safe-area-inset-top)) 0 calc(84px + env(safe-area-inset-bottom))}
+h1,h2,h3{font-family:var(--font-display);color:var(--text-primary);font-weight:400;text-wrap:balance}
+a{color:inherit}
+a:focus-visible,button:focus-visible{outline:2px solid var(--burgundy);outline-offset:3px}
+.label{font-family:var(--font-display);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted)}
+.wrap{padding:0 var(--s4)}
+.top{display:flex;align-items:center;justify-content:space-between;padding:var(--s2) var(--s4) var(--s3);border-bottom:1px solid var(--border)}
+.brand{font-family:var(--font-display);font-style:italic;font-size:26px;color:var(--text-primary);letter-spacing:-.01em}
+.date{font-style:italic;font-size:14px;color:var(--text-muted)}
+.avatar{width:34px;height:34px;border:1px solid var(--border);display:grid;place-items:center;font-family:var(--font-display);font-size:16px;color:var(--text-primary);background:var(--bg-surface)}
+.hero{padding:var(--s5) var(--s4) var(--s4)}
+.hero h1{font-size:40px;font-weight:300;line-height:1.02;letter-spacing:-.02em}
+.hero p{margin-top:var(--s3);font-size:17px;line-height:1.5;max-width:30ch}
+.hero p em{color:var(--text-primary)}
+
+/* next box: layered crop frames */
+.box{margin:var(--s3) var(--s4) 0;border:1px solid var(--border);background:var(--bg-surface)}
+.box-h{display:flex;justify-content:space-between;align-items:baseline;padding:var(--s3) var(--s4);border-bottom:1px solid var(--border)}
+.box-h h2{font-size:22px;font-weight:500}
+.box-h span{font-style:italic;font-size:14px}
+.frames{position:relative;height:178px;margin:var(--s4) var(--s4) 0}
+.frames .ph{position:absolute;border:1px solid var(--border);outline:6px solid var(--bg-surface)}
+.frames .f1{left:0;top:18px;width:112px;height:150px}
+.frames .f2{left:96px;top:0;width:118px;height:158px}
+.frames .f3{left:198px;top:26px;width:104px;height:138px}
+.box ol{list-style:none;padding:var(--s3) var(--s4)}
+.box li{display:flex;justify-content:space-between;gap:var(--s3);padding:6px 0;font-size:15px}
+.box li span:first-child{color:var(--text-primary)}
+.box li i{color:var(--text-muted)}
+.box-f{display:flex;gap:var(--s2);padding:0 var(--s4) var(--s4)}
+
+.btn{font-family:var(--font-display);font-size:12px;letter-spacing:.18em;text-transform:uppercase;padding:11px 18px;border-radius:0;border:1px solid var(--border);background:transparent;color:var(--text-primary);text-decoration:none;display:inline-block;cursor:pointer;transition:background-color .15s ease,color .15s ease}
+.btn:hover{background:var(--bg-muted)}
+.btn.primary{background:var(--text-primary);color:var(--bg-base);border-color:var(--text-primary)}
+.btn.primary:hover{background:var(--text-secondary)}
+
+/* dress code: vertical rhythm rules */
+.code{margin:var(--s5) var(--s4) 0;padding:var(--s4) 0;border-top:2px solid var(--text-primary);border-bottom:1px solid var(--border)}
+.code-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s2)}
+.badge{font-family:var(--font-display);font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding:2px 10px;border:1px solid var(--gold);color:var(--gold);background:var(--gold-tint)}
+.code h2{font-size:28px;font-style:italic;line-height:1.1}
+.code p{margin-top:var(--s2);font-size:16px;line-height:1.55}
+.code a{display:inline-block;margin-top:var(--s3);font-family:var(--font-display);font-size:16px;color:var(--burgundy);text-decoration-thickness:1px;text-underline-offset:4px}
+
+/* picks: off-grid editorial placement */
+.edit{padding:var(--s5) var(--s4) 0}
+.edit-h{display:flex;justify-content:space-between;align-items:baseline}
+.edit-h h2{font-size:30px;font-weight:300;letter-spacing:-.01em}
+.edit-h a{font-family:var(--font-display);font-size:15px;color:var(--text-muted)}
+.grid{display:grid;grid-template-columns:1fr 1fr;column-gap:var(--s3);margin-top:var(--s4)}
+.grid .col2{margin-top:var(--s6)}
+.piece{margin-bottom:var(--s4)}
+.piece .ph{width:100%;height:200px;border:1px solid var(--border)}
+.col2 .piece:first-child .ph{height:220px}
+.piece h3{font-size:18px;font-weight:500;margin-top:var(--s2);line-height:1.2}
+.piece .by{font-style:italic;font-size:14px;color:var(--text-muted)}
+.piece .price{font-family:var(--font-display);font-size:15px;color:var(--text-primary);margin-top:2px;font-variant-numeric:tabular-nums}
+.fits{display:inline-block;margin-top:4px;font-size:13px;font-style:italic;color:var(--sage)}
+
+/* try-on */
+.try{margin:var(--s4) var(--s4) 0;display:grid;grid-template-columns:132px 1fr;gap:var(--s3);align-items:end;padding:var(--s3);border:1px solid var(--border);background:var(--bg-surface)}
+.try .ph{width:132px;height:170px;border:1px solid var(--border)}
+.try h2{font-size:24px;line-height:1.1}
+.try p{font-size:15px;line-height:1.45;margin:var(--s2) 0 var(--s3)}
+
+/* deals */
+.deals{margin:var(--s5) var(--s4) 0}
+.deals h2{font-size:26px;font-weight:300;margin-bottom:var(--s2)}
+.deal{display:grid;grid-template-columns:1fr auto;gap:2px var(--s3);padding:var(--s3) 0;border-top:1px solid var(--border)}
+.deal:last-child{border-bottom:1px solid var(--border)}
+.deal b{font-family:var(--font-display);font-weight:500;font-size:19px;color:var(--text-primary)}
+.deal .off{font-family:var(--font-display);font-size:22px;color:var(--burgundy);font-variant-numeric:tabular-nums;grid-row:span 2;align-self:center}
+.deal i{font-size:14px}
+
+/* plan */
+.plan{margin:var(--s5) var(--s4) var(--s4);display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border)}
+.plan div{background:var(--bg-base);padding:var(--s3)}
+.plan .v{font-family:var(--font-display);font-weight:300;font-size:36px;color:var(--text-primary);letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+.plan .v small{font-size:18px;color:var(--text-muted)}
+.plan i{font-size:14px}
+.plan a{font-family:var(--font-display);font-size:15px;color:var(--burgundy)}
+
+/* bottom nav: dot + label */
+.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:var(--bg-surface);border-top:1px solid var(--border);padding:12px 8px calc(14px + env(safe-area-inset-bottom))}
+.tabs a{display:flex;flex-direction:column;align-items:center;gap:6px;font-family:var(--font-display);font-size:13px;letter-spacing:.06em;color:var(--text-muted);text-decoration:none;min-width:56px}
+.tabs a::before{content:"";width:5px;height:5px;border-radius:50%;background:transparent}
+.tabs a[aria-current]{color:var(--text-primary)}
+.tabs a[aria-current]::before{background:var(--gold)}
+@media (prefers-reduced-motion:no-preference){
+  .hero,.box,.code{animation:fadeUp .5s ease both}
+  .box{animation-delay:.07s}.code{animation-delay:.14s}
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.p-box1{background-image:url('https://loremflickr.com/600/800/navy,blazer?lock=11'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2UzZDljOCIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2Q1Y2JiYyIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNOTggODQgTDE1MCA2MiBMMjAyIDg0IEwyMzggMTE4IEwyNDYgMzAwIEwyMTQgMzA0IEwyMDYgMTUwIEwyMDQgMzQwIEw5NiAzNDAgTDk0IDE1MCBMODYgMzA0IEw1NCAzMDAgTDYyIDExOCBaIiBmaWxsPSIjMjYzMjRmIi8+PHBhdGggZD0iTTE1MCA2NCBMMTI0IDg4IEwxMzggMTc2IEwxNTAgMjE0IFoiIGZpbGw9IiMxYjI0MzgiLz48cGF0aCBkPSJNMTUwIDY0IEwxNzYgODggTDE2MiAxNzYgTDE1MCAyMTQgWiIgZmlsbD0iIzFiMjQzOCIvPjxwYXRoIGQ9Ik0xMzYgNzQgTDE1MCA2NCBMMTY0IDc0IEwxNTAgMTIwIFoiIGZpbGw9IiNmMWVkZTYiLz48Y2lyY2xlIGN4PSIxNTAiIGN5PSIyNDAiIHI9IjUiIGZpbGw9IiMxYjI0MzgiLz48Y2lyY2xlIGN4PSIxNTAiIGN5PSIyNzAiIHI9IjUiIGZpbGw9IiMxYjI0MzgiLz48cGF0aCBkPSJNMTEwIDI4MCBMMTM2IDI4MCIgc3Ryb2tlPSIjMWIyNDM4IiBzdHJva2Utd2lkdGg9IjMiLz48cGF0aCBkPSJNMTY0IDI4MCBMMTkwIDI4MCIgc3Ryb2tlPSIjMWIyNDM4IiBzdHJva2Utd2lkdGg9IjMiLz48L2c+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9InVybCgjbCkiLz48L3N2Zz4=');background-size:cover;background-position:center;background-color:#e3d9c8}
+.p-box2{background-image:url('https://loremflickr.com/600/800/trousers,beige?lock=12'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2U5ZTFkMyIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2RiZDNjNiIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cmVjdCB4PSIxMDQiIHk9IjgwIiB3aWR0aD0iOTIiIGhlaWdodD0iMTgiIHJ4PSIyIiBmaWxsPSIjODU3YzZkIi8+PHBhdGggZD0iTTEwNCA5OCBMMTk2IDk4IEwyMTAgMzcyIEwxNjIgMzcyIEwxNTAgMTcwIEwxMzggMzcyIEw5MCAzNzIgWiIgZmlsbD0iI2I5YWQ5OCIvPjxwYXRoIGQ9Ik0xMjQgMTEwIEwxMTQgMzcyIE0xNzYgMTEwIEwxODYgMzcyIiBzdHJva2U9IiM4NTdjNmQiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iLjUiLz48L2c+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9InVybCgjbCkiLz48L3N2Zz4=');background-size:cover;background-position:center;background-color:#e9e1d3}
+.p-box3{background-image:url('https://loremflickr.com/600/800/silk,blouse,ivory?lock=13'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2Q4Y2NiNiIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2NiYmZhYiIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMTAwIDg0IEwxMzIgNjggTDE1MCA4MiBMMTY4IDY4IEwyMDAgODQgTDI0MCAxNTYgTDIxNCAxNzAgTDE5OCAxMzggTDIwMCAzMzAgTDEwMCAzMzAgTDEwMiAxMzggTDg2IDE3MCBMNjAgMTU2IFoiIGZpbGw9IiNmM2VlZTQiLz48cGF0aCBkPSJNMTMyIDY4IEwxNTAgODIgTDE0MCAxMDAgWiBNMTY4IDY4IEwxNTAgODIgTDE2MCAxMDAgWiIgZmlsbD0iI2FlYWJhNCIvPjxwYXRoIGQ9Ik0xNTAgODQgTDE1MCAzMzAiIHN0cm9rZT0iI2FlYWJhNCIgc3Ryb2tlLXdpZHRoPSIyIi8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMTIwIiByPSIzIiBmaWxsPSIjYWVhYmE0Ii8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMTcwIiByPSIzIiBmaWxsPSIjYWVhYmE0Ii8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMjIwIiByPSIzIiBmaWxsPSIjYWVhYmE0Ii8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMjcwIiByPSIzIiBmaWxsPSIjYWVhYmE0Ii8+PC9nPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iNDAwIiBmaWxsPSJ1cmwoI2wpIi8+PC9zdmc+');background-size:cover;background-position:center;background-color:#d8ccb6}
+.p-pick1{background-image:url('https://loremflickr.com/600/800/tweed,jacket,woman?lock=14'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2U2ZGRjZCIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2Q4Y2ZjMCIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNOTggODQgTDE1MCA2MiBMMjAyIDg0IEwyMzggMTE4IEwyNDYgMzAwIEwyMTQgMzA0IEwyMDYgMTUwIEwyMDQgMzQwIEw5NiAzNDAgTDk0IDE1MCBMODYgMzA0IEw1NCAzMDAgTDYyIDExOCBaIiBmaWxsPSIjNDY0NDRiIi8+PHBhdGggZD0iTTE1MCA2NCBMMTI0IDg4IEwxMzggMTc2IEwxNTAgMjE0IFoiIGZpbGw9IiMzMjMwMzYiLz48cGF0aCBkPSJNMTUwIDY0IEwxNzYgODggTDE2MiAxNzYgTDE1MCAyMTQgWiIgZmlsbD0iIzMyMzAzNiIvPjxwYXRoIGQ9Ik0xMzYgNzQgTDE1MCA2NCBMMTY0IDc0IEwxNTAgMTIwIFoiIGZpbGw9IiNmMWVkZTYiLz48Y2lyY2xlIGN4PSIxNTAiIGN5PSIyNDAiIHI9IjUiIGZpbGw9IiMzMjMwMzYiLz48Y2lyY2xlIGN4PSIxNTAiIGN5PSIyNzAiIHI9IjUiIGZpbGw9IiMzMjMwMzYiLz48cGF0aCBkPSJNMTEwIDI4MCBMMTM2IDI4MCIgc3Ryb2tlPSIjMzIzMDM2IiBzdHJva2Utd2lkdGg9IjMiLz48cGF0aCBkPSJNMTY0IDI4MCBMMTkwIDI4MCIgc3Ryb2tlPSIjMzIzMDM2IiBzdHJva2Utd2lkdGg9IjMiLz48L2c+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9InVybCgjbCkiLz48L3N2Zz4=');background-size:cover;background-position:center;background-color:#e6ddcd}
+.p-pick2{background-image:url('https://loremflickr.com/600/800/knit,dress,green?lock=15'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2RlZDNjMCIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2QwYzZiNCIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMTI0IDgyIEwxMjggNjYgTTE3NiA4MiBMMTcyIDY2IiBzdHJva2U9IiMyMTM1MjkiIHN0cm9rZS13aWR0aD0iNSIvPjxwYXRoIGQ9Ik0xMTggODIgTDE4MiA4MiBMMTkwIDE1MCBMMTc0IDE5MCBMMjE0IDM3MiBMODYgMzcyIEwxMjYgMTkwIEwxMTAgMTUwIFoiIGZpbGw9IiMyZjRhM2EiLz48cGF0aCBkPSJNMTI2IDE5MCBMMTc0IDE5MCIgc3Ryb2tlPSIjMjEzNTI5IiBzdHJva2Utd2lkdGg9IjYiLz48L2c+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9InVybCgjbCkiLz48L3N2Zz4=');background-size:cover;background-position:center;background-color:#ded3c0}
+.p-pick3{background-image:url('https://loremflickr.com/600/800/tailored,trousers,woman?lock=16'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2ViZTNkNSIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2RjZDVjOCIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cmVjdCB4PSIxMDQiIHk9IjgwIiB3aWR0aD0iOTIiIGhlaWdodD0iMTgiIHJ4PSIyIiBmaWxsPSIjNjM1NzRjIi8+PHBhdGggZD0iTTEwNCA5OCBMMTk2IDk4IEwyMTAgMzcyIEwxNjIgMzcyIEwxNTAgMTcwIEwxMzggMzcyIEw5MCAzNzIgWiIgZmlsbD0iIzhhN2E2YSIvPjxwYXRoIGQ9Ik0xMjQgMTEwIEwxMTQgMzcyIE0xNzYgMTEwIEwxODYgMzcyIiBzdHJva2U9IiM2MzU3NGMiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iLjUiLz48L2c+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9InVybCgjbCkiLz48L3N2Zz4=');background-size:cover;background-position:center;background-color:#ebe3d5}
+.p-pick4{background-image:url('https://loremflickr.com/600/800/oxford,shirt,woman?lock=17'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2Q5Y2RiOCIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2NiYzBhYyIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMTAwIDg0IEwxMzIgNjggTDE1MCA4MiBMMTY4IDY4IEwyMDAgODQgTDI0MCAxNTYgTDIxNCAxNzAgTDE5OCAxMzggTDIwMCAzMzAgTDEwMCAzMzAgTDEwMiAxMzggTDg2IDE3MCBMNjAgMTU2IFoiIGZpbGw9IiNkM2RkZTgiLz48cGF0aCBkPSJNMTMyIDY4IEwxNTAgODIgTDE0MCAxMDAgWiBNMTY4IDY4IEwxNTAgODIgTDE2MCAxMDAgWiIgZmlsbD0iIzk3OWZhNyIvPjxwYXRoIGQ9Ik0xNTAgODQgTDE1MCAzMzAiIHN0cm9rZT0iIzk3OWZhNyIgc3Ryb2tlLXdpZHRoPSIyIi8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMTIwIiByPSIzIiBmaWxsPSIjOTc5ZmE3Ii8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMTcwIiByPSIzIiBmaWxsPSIjOTc5ZmE3Ii8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMjIwIiByPSIzIiBmaWxsPSIjOTc5ZmE3Ii8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMjcwIiByPSIzIiBmaWxsPSIjOTc5ZmE3Ii8+PC9nPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iNDAwIiBmaWxsPSJ1cmwoI2wpIi8+PC9zdmc+');background-size:cover;background-position:center;background-color:#d9cdb8}
+.p-tryon{background-image:url('https://loremflickr.com/600/800/woman,blazer,portrait?lock=18'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiNkOWNkYjgiLz48cGF0aCBkPSJNODYgMTUwIFE4NCA3MCAxNTAgNjYgUTIxOCA3MCAyMTQgMTUwIEwyMjIgMzAwIEw3OCAzMDAgWiIgZmlsbD0iIzJiMWQxNyIvPjxyZWN0IHg9IjEzMiIgeT0iMjE2IiB3aWR0aD0iMzYiIGhlaWdodD0iNDAiIGZpbGw9IiNiNDhhNmYiLz48ZWxsaXBzZSBjeD0iMTUwIiBjeT0iMTY4IiByeD0iNDQiIHJ5PSI1NiIgZmlsbD0iI2M5OWE3YyIvPjxwYXRoIGQ9Ik0xMDYgMTUwIFExMjAgOTYgMTYwIDEwNCBRMTkyIDExMiAxOTYgMTUwIFExOTYgMTEyIDE1MCA5MiBRMTA0IDEwMCAxMDYgMTUwIFoiIGZpbGw9IiMyYjFkMTciLz48cGF0aCBkPSJNMzAgNDAwIFEzNCAyNzAgMTUwIDI1MiBRMjY2IDI3MCAyNzAgNDAwIFoiIGZpbGw9IiMyNjMyNGYiLz48cGF0aCBkPSJNMTI2IDI1NCBMMTUwIDMwMCBMMTc0IDI1NCBMMTYyIDI1MiBMMTUwIDI3MCBMMTM4IDI1MiBaIiBmaWxsPSIjZjFlZGU2Ii8+PHBhdGggZD0iTTEyNiAyNTQgTDExMiAyNjggTDE1MCAzNjAgTDEzOCAzMDAgWiBNMTc0IDI1NCBMMTg4IDI2OCBMMTUwIDM2MCBMMTYyIDMwMCBaIiBmaWxsPSIjMWEyMzM3Ii8+PGNpcmNsZSBjeD0iMTUwIiBjeT0iMzMwIiByPSI0IiBmaWxsPSIjMWEyMzM3Ii8+PC9zdmc+');background-size:cover;background-position:center;background-color:#d9cdb8}
+
+</style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <div class="brand" translate="no">Lapel</div>
+    <div class="date">Wednesday, October 28</div>
+  </div>
+  <a class="avatar" href="#" aria-label="Your account">M</a>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>Good morning, Maya.</h1>
+    <p>Five days until your first Monday at <em translate="no">Harlow &amp; Pierce</em>. Your first box is on its way.</p>
+  </section>
+
+  <section class="box" aria-labelledby="box-h">
+    <div class="box-h"><h2 id="box-h">Arriving Thursday</h2><span>3 pieces</span></div>
+    <div class="frames" aria-hidden="true">
+      <div class="ph f1 p-box1" role="img"></div>
+      <div class="ph f2 p-box2" role="img"></div>
+      <div class="ph f3 p-box3" role="img"></div>
+    </div>
+    <ol>
+      <li><span>Wool-blend blazer, navy</span><i translate="no">Arden &amp; Vale</i></li>
+      <li><span>Pleated wide-leg trouser</span><i translate="no">Kestrel</i></li>
+      <li><span>Silk shell blouse, ivory</span><i translate="no">Noor Atelier</i></li>
+    </ol>
+    <div class="box-f"><a class="btn" href="#">Track box</a><a class="btn" href="#">Swap a piece</a></div>
+  </section>
+
+  <section class="code" aria-labelledby="code-h">
+    <div class="code-row"><span class="label">Your dress code</span><span class="badge">Updated Oct 21</span></div>
+    <h2 id="code-h">Business casual at <span translate="no">Harlow &amp; Pierce</span></h2>
+    <p>Denim is now allowed on Fridays. Four pieces in your closet just became Friday-ready.</p>
+    <a href="#">See what changed</a>
+  </section>
+
+  <section class="edit" aria-labelledby="edit-h">
+    <div class="edit-h"><h2 id="edit-h">Picked for your first week</h2><a href="#">See all</a></div>
+    <div class="grid">
+      <div class="col1">
+        <article class="piece">
+          <div class="ph p-pick1" role="img" aria-label="Cropped tweed jacket in charcoal"></div>
+          <h3>Cropped tweed jacket</h3><div class="by" translate="no">Halden</div>
+          <div class="price">Rent $24 or buy $148</div><span class="fits">Fits your dress code</span>
+        </article>
+        <article class="piece">
+          <div class="ph p-pick3" role="img" aria-label="Straight-leg trouser in taupe"></div>
+          <h3>Straight-leg trouser</h3><div class="by" translate="no">Kestrel</div>
+          <div class="price">Rent $16 or buy $98</div><span class="fits">Fits your dress code</span>
+        </article>
+      </div>
+      <div class="col2">
+        <article class="piece">
+          <div class="ph p-pick2" role="img" aria-label="Knit midi dress in forest green"></div>
+          <h3>Knit midi dress</h3><div class="by" translate="no">Noor Atelier</div>
+          <div class="price">Rent $22 or buy $165</div><span class="fits">Fits your dress code</span>
+        </article>
+        <article class="piece">
+          <div class="ph p-pick4" role="img" aria-label="Poplin button-down in pale blue"></div>
+          <h3>Poplin button-down</h3><div class="by" translate="no">Arden &amp; Vale</div>
+          <div class="price">Rent $12 or buy $68</div><span class="fits">Fits your dress code</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="try" aria-labelledby="try-h">
+    <div class="ph p-tryon" role="img" aria-label="Your photo wearing the navy blazer"></div>
+    <div>
+      <h2 id="try-h">See the navy blazer on you</h2>
+      <p>Uses the photo you added on Sunday.</p>
+      <a class="btn primary" href="#">Try it on</a>
+    </div>
+  </section>
+
+  <section class="deals" aria-labelledby="deals-h">
+    <h2 id="deals-h">Brands on sale this week</h2>
+    <div class="deal"><b translate="no">Arden &amp; Vale</b><span class="off">30% off</span><i>To buy, ends Sunday</i></div>
+    <div class="deal"><b translate="no">Kestrel</b><span class="off">25% off</span><i>All suiting, rent or buy</i></div>
+    <div class="deal"><b translate="no">Halden</b><span class="off">20% off</span><i>Members only, through November</i></div>
+  </section>
+
+  <section class="plan" aria-label="Your membership">
+    <div><span class="label">Swaps left</span><div class="v">2 <small>of 4</small></div><i>Resets November 1</i></div>
+    <div><span class="label">Your plan</span><div class="v">Essentials</div><a href="#">Compare plans</a></div>
+  </section>
+</main>
+
+<nav class="tabs" aria-label="Main">
+  <a href="#" aria-current="page">Home</a><a href="#">Browse</a><a href="#">Try on</a><a href="#">Closet</a><a href="#">You</a>
+</nav>
+</body>
+</html>

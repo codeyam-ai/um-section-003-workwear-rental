@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="codeyam-viewport" content="mobile">
+<title>Week planner, Swiss grid</title>
+<style>
+:root{
+  --bg:#ffffff; --surface:#f4f5f6; --ink:#15171c; --body:#3f434b; --mute:#6b707a; --rule:#dfe2e6; --rule-strong:#15171c;
+  --accent:#0f7b57; --accent-soft:#e6f3ed; --on-accent:#ffffff;
+  --font:'Neue Haas Grotesk Text','Helvetica Neue',Helvetica,Arial,'Liberation Sans',sans-serif;
+  --r:2px;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#111316; --surface:#1a1d21; --ink:#f1f3f5; --body:#c3c8cf; --mute:#8d939c; --rule:#2a2e34; --rule-strong:#f1f3f5;
+  --accent:#4fc898; --accent-soft:#14291f; --on-accent:#0a1f16;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg)}
+body{font-family:var(--font);color:var(--body);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.4;
+  padding:calc(50px + env(safe-area-inset-top)) 0 calc(80px + env(safe-area-inset-bottom))}
+h1,h2,h3{color:var(--ink);text-wrap:balance}
+a{color:inherit;text-decoration:none}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+svg{display:block}
+.g{padding:0 18px}
+.top{display:flex;justify-content:space-between;align-items:baseline;padding:6px 18px 14px;border-bottom:2px solid var(--rule-strong)}
+.brand{font-weight:700;font-size:19px;letter-spacing:-.03em;color:var(--ink)}
+.top span{font-size:13px;color:var(--mute);font-variant-numeric:tabular-nums}
+.intro{padding:22px 18px 18px;display:grid;grid-template-columns:1fr 92px;gap:14px;align-items:end}
+.intro h1{font-size:34px;line-height:1;letter-spacing:-.035em;font-weight:700}
+.intro p{margin-top:10px;font-size:14px;color:var(--body)}
+.countdown{border-left:2px solid var(--accent);padding-left:10px}
+.countdown b{display:block;font-size:44px;line-height:.9;color:var(--accent);font-weight:700;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.countdown span{font-size:12px;color:var(--mute)}
+
+.status{margin:0 18px;display:flex;gap:10px;align-items:center;padding:10px 12px;background:var(--accent-soft);border-radius:var(--r)}
+.status svg{color:var(--accent);flex:none}
+.status div{flex:1;min-width:0;font-size:13px}
+.status b{color:var(--ink)}
+.status a{font-size:13px;font-weight:700;color:var(--accent);white-space:nowrap}
+
+/* ranked week: day as typographic element */
+.sec{margin-top:26px}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;padding:0 18px 8px;border-bottom:1px solid var(--rule-strong);margin:0 18px;padding-left:0;padding-right:0}
+.sec-h h2{font-size:13px;font-weight:700;letter-spacing:.01em}
+.sec-h a{font-size:13px;color:var(--accent);font-weight:700}
+.day{display:grid;grid-template-columns:52px 54px 1fr auto;gap:12px;align-items:center;margin:0 18px;padding:12px 0;border-bottom:1px solid var(--rule)}
+.day .d{font-size:23px;font-weight:700;line-height:.9;color:var(--ink);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.day .d small{display:block;font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--mute);margin-top:4px}
+.day .ph{width:54px;height:68px;border-radius:var(--r)}
+.day h3{font-size:14px;font-weight:600;line-height:1.25}
+.day p{font-size:12.5px;color:var(--mute);margin-top:2px}
+.src{font-size:12px;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right}
+.src.box{color:var(--ink)}
+.src.rent{color:var(--accent)}
+.src.own{color:var(--mute);font-weight:600}
+.day.today .d{color:var(--accent)}
+
+/* box progress: a real sequence */
+.track{margin:20px 18px 0;padding:14px;background:var(--surface);border-radius:var(--r)}
+.track-h{display:flex;justify-content:space-between;font-size:13px}
+.track-h b{color:var(--ink)}
+.tlink{color:var(--accent);font-weight:700}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:12px}
+.steps div{border-top:3px solid var(--rule);padding-top:6px;font-size:12px;color:var(--mute)}
+.steps .done{border-color:var(--accent);color:var(--ink);font-weight:600}
+
+.try{margin:20px 18px 0;display:grid;grid-template-columns:1fr 104px;gap:14px;align-items:center;border-top:2px solid var(--rule-strong);padding-top:16px}
+.try h2{font-size:20px;line-height:1.1;letter-spacing:-.02em}
+.try p{font-size:13px;margin:6px 0 12px}
+.try .ph{width:104px;height:128px;border-radius:var(--r)}
+.btn{display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:var(--r);background:var(--ink);color:var(--bg);font-weight:700;font-size:13px}
+.btn:hover{background:var(--accent);color:var(--on-accent)}
+
+/* ledger table */
+table{width:calc(100% - 36px);margin:0 18px;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th{font-size:11px;font-weight:600;color:var(--mute);text-align:left;padding:10px 0 6px}
+td{padding:10px 0;border-top:1px solid var(--rule);font-size:13.5px;vertical-align:top}
+td:first-child{color:var(--ink);font-weight:600}
+.num{text-align:right}
+td.num{color:var(--accent);font-weight:700}
+.plan{display:grid;grid-template-columns:1fr 1fr 1fr;margin:0 18px;border-bottom:1px solid var(--rule)}
+.plan div{padding:12px 0}
+.plan div + div{border-left:1px solid var(--rule);padding-left:12px}
+.plan small{display:block;font-size:11px;color:var(--mute)}
+.plan b{font-size:20px;color:var(--ink);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.more{display:block;margin:10px 18px 0;font-size:13px;font-weight:700;color:var(--accent)}
+
+.tabs{position:fixed;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(5,1fr);background:var(--bg);border-top:2px solid var(--rule-strong);padding:0 0 env(safe-area-inset-bottom)}
+.tabs a{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:10px 10px 14px;font-size:12px;font-weight:600;color:var(--mute)}
+.tabs a + a{border-left:1px solid var(--rule)}
+.tabs a::before{content:"";width:18px;height:3px;background:var(--rule)}
+.tabs a[aria-current]{color:var(--ink)}
+.tabs a[aria-current]::before{background:var(--accent)}
+.p-mon{background-image:url('https://loremflickr.com/600/800/navy,blazer?lock=61'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2VlZjBmMiIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2RmZTFlMyIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNOTggODQgTDE1MCA2MiBMMjAyIDg0IEwyMzggMTE4IEwyNDYgMzAwIEwyMTQgMzA0IEwyMDYgMTUwIEwyMDQgMzQwIEw5NiAzNDAgTDk0IDE1MCBMODYgMzA0IEw1NCAzMDAgTDYyIDExOCBaIiBmaWxsPSIjMjYzMjRmIi8+PHBhdGggZD0iTTE1MCA2NCBMMTI0IDg4IEwxMzggMTc2IEwxNTAgMjE0IFoiIGZpbGw9IiMxYjI0MzgiLz48cGF0aCBkPSJNMTUwIDY0IEwxNzYgODggTDE2MiAxNzYgTDE1MCAyMTQgWiIgZmlsbD0iIzFiMjQzOCIvPjxwYXRoIGQ9Ik0xMzYgNzQgTDE1MCA2NCBMMTY0IDc0IEwxNTAgMTIwIFoiIGZpbGw9IiNmMWVkZTYiLz48Y2lyY2xlIGN4PSIxNTAiIGN5PSIyNDAiIHI9IjUiIGZpbGw9IiMxYjI0MzgiLz48Y2lyY2xlIGN4PSIxNTAiIGN5PSIyNzAiIHI9IjUiIGZpbGw9IiMxYjI0MzgiLz48cGF0aCBkPSJNMTEwIDI4MCBMMTM2IDI4MCIgc3Ryb2tlPSIjMWIyNDM4IiBzdHJva2Utd2lkdGg9IjMiLz48cGF0aCBkPSJNMTY0IDI4MCBMMTkwIDI4MCIgc3Ryb2tlPSIjMWIyNDM4IiBzdHJva2Utd2lkdGg9IjMiLz48L2c+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9InVybCgjbCkiLz48L3N2Zz4=');background-size:cover;background-position:center;background-color:#eef0f2}
+.p-tue{background-image:url('https://loremflickr.com/600/800/tweed,jacket,woman?lock=62'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2YwZjBlZSIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2UxZTFkZiIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNOTggODQgTDE1MCA2MiBMMjAyIDg0IEwyMzggMTE4IEwyNDYgMzAwIEwyMTQgMzA0IEwyMDYgMTUwIEwyMDQgMzQwIEw5NiAzNDAgTDk0IDE1MCBMODYgMzA0IEw1NCAzMDAgTDYyIDExOCBaIiBmaWxsPSIjNDY0NDRiIi8+PHBhdGggZD0iTTE1MCA2NCBMMTI0IDg4IEwxMzggMTc2IEwxNTAgMjE0IFoiIGZpbGw9IiMzMjMwMzYiLz48cGF0aCBkPSJNMTUwIDY0IEwxNzYgODggTDE2MiAxNzYgTDE1MCAyMTQgWiIgZmlsbD0iIzMyMzAzNiIvPjxwYXRoIGQ9Ik0xMzYgNzQgTDE1MCA2NCBMMTY0IDc0IEwxNTAgMTIwIFoiIGZpbGw9IiNmMWVkZTYiLz48Y2lyY2xlIGN4PSIxNTAiIGN5PSIyNDAiIHI9IjUiIGZpbGw9IiMzMjMwMzYiLz48Y2lyY2xlIGN4PSIxNTAiIGN5PSIyNzAiIHI9IjUiIGZpbGw9IiMzMjMwMzYiLz48cGF0aCBkPSJNMTEwIDI4MCBMMTM2IDI4MCIgc3Ryb2tlPSIjMzIzMDM2IiBzdHJva2Utd2lkdGg9IjMiLz48cGF0aCBkPSJNMTY0IDI4MCBMMTkwIDI4MCIgc3Ryb2tlPSIjMzIzMDM2IiBzdHJva2Utd2lkdGg9IjMiLz48L2c+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9InVybCgjbCkiLz48L3N2Zz4=');background-size:cover;background-position:center;background-color:#f0f0ee}
+.p-wed{background-image:url('https://loremflickr.com/600/800/knit,dress,green?lock=63'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2VlZjBlZSIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2RmZTFkZiIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMTI0IDgyIEwxMjggNjYgTTE3NiA4MiBMMTcyIDY2IiBzdHJva2U9IiMyMTM1MjkiIHN0cm9rZS13aWR0aD0iNSIvPjxwYXRoIGQ9Ik0xMTggODIgTDE4MiA4MiBMMTkwIDE1MCBMMTc0IDE5MCBMMjE0IDM3MiBMODYgMzcyIEwxMjYgMTkwIEwxMTAgMTUwIFoiIGZpbGw9IiMyZjRhM2EiLz48cGF0aCBkPSJNMTI2IDE5MCBMMTc0IDE5MCIgc3Ryb2tlPSIjMjEzNTI5IiBzdHJva2Utd2lkdGg9IjYiLz48L2c+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9InVybCgjbCkiLz48L3N2Zz4=');background-size:cover;background-position:center;background-color:#eef0ee}
+.p-thu{background-image:url('https://loremflickr.com/600/800/grey,sweater?lock=64'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2YwZjFmMyIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2UxZTJlNCIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNOTYgODYgTDE1MCA3NCBMMjA0IDg2IEwyNDIgMTcwIEwyNDYgMzAwIEwyMTggMzA0IEwyMDYgMTgwIEwyMDYgMzMwIEw5NCAzMzAgTDk0IDE4MCBMODIgMzA0IEw1NCAzMDAgTDU4IDE3MCBaIiBmaWxsPSIjOGI5MDk3Ii8+PGVsbGlwc2UgY3g9IjE1MCIgY3k9Ijg0IiByeD0iMjYiIHJ5PSIxMCIgZmlsbD0iIzY0Njc2YyIvPjxwYXRoIGQ9Ik05NCAzMTYgTDIwNiAzMTYgTTU0IDI5MiBMODIgMjkyIE0yMTggMjkyIEwyNDYgMjkyIiBzdHJva2U9IiM2NDY3NmMiIHN0cm9rZS13aWR0aD0iOCIvPjwvZz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0idXJsKCNsKSIvPjwvc3ZnPg==');background-size:cover;background-position:center;background-color:#f0f1f3}
+.p-fri{background-image:url('https://loremflickr.com/600/800/oxford,shirt,woman?lock=65'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJsIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9Ii4yMiIvPjxzdG9wIG9mZnNldD0iLjYiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMTgiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2VjZWVmMiIvPjxyZWN0IHk9IjMzMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2RkZGZlMyIvPjxlbGxpcHNlIGN4PSIxNTAiIGN5PSIzODQiIHJ4PSI5MCIgcnk9IjgiIGZpbGw9IiMwMDAiIG9wYWNpdHk9Ii4xMiIvPjxnPjxwYXRoIGQ9Ik0xNTAgNTggTDE1MCA0NCBRMTUwIDMwIDE2MiAzMCBRMTcyIDMxIDE3MSA0MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGE4YThmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04NiA4NCBMMTUwIDU2IEwyMTQgODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzdhNmE1OCIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMTAwIDg0IEwxMzIgNjggTDE1MCA4MiBMMTY4IDY4IEwyMDAgODQgTDI0MCAxNTYgTDIxNCAxNzAgTDE5OCAxMzggTDIwMCAzMzAgTDEwMCAzMzAgTDEwMiAxMzggTDg2IDE3MCBMNjAgMTU2IFoiIGZpbGw9IiNjOWQ2ZTYiLz48cGF0aCBkPSJNMTMyIDY4IEwxNTAgODIgTDE0MCAxMDAgWiBNMTY4IDY4IEwxNTAgODIgTDE2MCAxMDAgWiIgZmlsbD0iIzkwOWFhNSIvPjxwYXRoIGQ9Ik0xNTAgODQgTDE1MCAzMzAiIHN0cm9rZT0iIzkwOWFhNSIgc3Ryb2tlLXdpZHRoPSIyIi8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMTIwIiByPSIzIiBmaWxsPSIjOTA5YWE1Ii8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMTcwIiByPSIzIiBmaWxsPSIjOTA5YWE1Ii8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMjIwIiByPSIzIiBmaWxsPSIjOTA5YWE1Ii8+PGNpcmNsZSBjeD0iMTU2IiBjeT0iMjcwIiByPSIzIiBmaWxsPSIjOTA5YWE1Ii8+PC9nPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iNDAwIiBmaWxsPSJ1cmwoI2wpIi8+PC9zdmc+');background-size:cover;background-position:center;background-color:#eceef2}
+.p-tryon{background-image:url('https://loremflickr.com/600/800/woman,blazer,portrait?lock=66'),url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBzbGljZSI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiNkZmU3ZTMiLz48cGF0aCBkPSJNODYgMTUwIFE4NCA3MCAxNTAgNjYgUTIxOCA3MCAyMTQgMTUwIEwyMjIgMzAwIEw3OCAzMDAgWiIgZmlsbD0iIzJiMWQxNyIvPjxyZWN0IHg9IjEzMiIgeT0iMjE2IiB3aWR0aD0iMzYiIGhlaWdodD0iNDAiIGZpbGw9IiNiNDhhNmYiLz48ZWxsaXBzZSBjeD0iMTUwIiBjeT0iMTY4IiByeD0iNDQiIHJ5PSI1NiIgZmlsbD0iI2M5OWE3YyIvPjxwYXRoIGQ9Ik0xMDYgMTUwIFExMjAgOTYgMTYwIDEwNCBRMTkyIDExMiAxOTYgMTUwIFExOTYgMTEyIDE1MCA5MiBRMTA0IDEwMCAxMDYgMTUwIFoiIGZpbGw9IiMyYjFkMTciLz48cGF0aCBkPSJNMzAgNDAwIFEzNCAyNzAgMTUwIDI1MiBRMjY2IDI3MCAyNzAgNDAwIFoiIGZpbGw9IiMyNjMyNGYiLz48cGF0aCBkPSJNMTI2IDI1NCBMMTUwIDMwMCBMMTc0IDI1NCBMMTYyIDI1MiBMMTUwIDI3MCBMMTM4IDI1MiBaIiBmaWxsPSIjZjFlZGU2Ii8+PHBhdGggZD0iTTEyNiAyNTQgTDExMiAyNjggTDE1MCAzNjAgTDEzOCAzMDAgWiBNMTc0IDI1NCBMMTg4IDI2OCBMMTUwIDM2MCBMMTYyIDMwMCBaIiBmaWxsPSIjMWEyMzM3Ii8+PGNpcmNsZSBjeD0iMTUwIiBjeT0iMzMwIiByPSI0IiBmaWxsPSIjMWEyMzM3Ii8+PC9zdmc+');background-size:cover;background-position:center;background-color:#dfe7e3}
+
+</style>
+</head>
+<body>
+<header class="top"><span class="brand" translate="no">Lapel</span><span>Wed 28 Oct</span></header>
+
+<main>
+  <section class="intro">
+    <div>
+      <h1>Maya’s first week</h1>
+      <p>Starts Monday, Nov 2 at <span translate="no">Harlow &amp; Pierce</span>.</p>
+    </div>
+    <div class="countdown"><b>5</b><span>days to go</span></div>
+  </section>
+
+  <section class="status" aria-label="Your dress code">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+    <div><b>All 5 outfits fit business casual.</b> Policy updated Oct 21: denim is OK on Fridays.</div>
+    <a href="#">Policy</a>
+  </section>
+
+  <section class="sec" aria-labelledby="week-h">
+    <div class="sec-h"><h2 id="week-h">Your week, planned</h2><a href="#">Edit</a></div>
+    <div class="day today"><div class="d">Mon<small>Nov 2</small></div><div class="ph p-mon" role="img" aria-label="Navy wool-blend blazer"></div><div><h3>Navy blazer, wide-leg trouser, silk shell</h3><p translate="no">Arden &amp; Vale, Kestrel, Noor Atelier</p></div><span class="src box">In your box</span></div>
+    <div class="day"><div class="d">Tue<small>Nov 3</small></div><div class="ph p-tue" role="img" aria-label="Cropped tweed jacket"></div><div><h3>Cropped tweed jacket</h3><p><span translate="no">Halden</span>, buy for $148</p></div><span class="src rent">Rent $24</span></div>
+    <div class="day"><div class="d">Wed<small>Nov 4</small></div><div class="ph p-wed" role="img" aria-label="Knit midi dress"></div><div><h3>Knit midi dress</h3><p><span translate="no">Noor Atelier</span>, buy for $165</p></div><span class="src rent">Rent $22</span></div>
+    <div class="day"><div class="d">Thu<small>Nov 5</small></div><div class="ph p-thu" role="img" aria-label="Grey sweater from your closet"></div><div><h3>Grey crewneck, straight-leg trouser</h3><p>Trouser from <span translate="no">Kestrel</span>, buy for $98</p></div><span class="src rent">Rent $16</span></div>
+    <div class="day"><div class="d">Fri<small>Nov 6</small></div><div class="ph p-fri" role="img" aria-label="Poplin button-down"></div><div><h3>Your dark jeans, poplin button-down</h3><p><span translate="no">Arden &amp; Vale</span>, buy for $68</p></div><span class="src rent">Rent $12</span></div>
+  </section>
+
+  <section class="track" aria-label="Your box">
+    <div class="track-h"><b>Box of 3 arrives Thursday</b><a href="#" class="tlink">Track</a></div>
+    <div class="steps"><div class="done">Packed</div><div class="done">Shipped</div><div>Delivered</div></div>
+  </section>
+
+  <section class="try" aria-labelledby="try-h">
+    <div><h2 id="try-h">Try Monday’s outfit on you</h2><p>Uses the photo you added Sunday.</p><a class="btn" href="#">Try it on</a></div>
+    <div class="ph p-tryon" role="img" aria-label="Your photo wearing the navy blazer"></div>
+  </section>
+
+  <section class="sec" aria-labelledby="deals-h">
+    <div class="sec-h"><h2 id="deals-h">Brands on sale</h2><a href="#">All deals</a></div>
+    <table>
+      <thead><tr><th>Brand</th><th>Applies to</th><th class="num">Off</th></tr></thead>
+      <tbody>
+        <tr><td translate="no">Arden &amp; Vale</td><td>Buying, ends Sunday</td><td class="num">30%</td></tr>
+        <tr><td translate="no">Kestrel</td><td>All suiting</td><td class="num">25%</td></tr>
+        <tr><td translate="no">Halden</td><td>Members, through Nov</td><td class="num">20%</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="sec" aria-labelledby="plan-h">
+    <div class="sec-h"><h2 id="plan-h">Your membership</h2></div>
+    <div class="plan">
+      <div><small>Plan</small><b>Essentials</b></div>
+      <div><small>Swaps left</small><b>2 of 4</b></div>
+      <div><small>Resets</small><b>Nov 1</b></div>
+    </div>
+    <a class="more" href="#">Compare plans</a>
+  </section>
+</main>
+
+<nav class="tabs" aria-label="Main">
+  <a href="#" aria-current="page">Home</a><a href="#">Browse</a><a href="#">Try on</a><a href="#">Closet</a><a href="#">You</a>
+</nav>
+</body>
+</html>

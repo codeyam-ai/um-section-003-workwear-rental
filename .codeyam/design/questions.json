@@ -1,0 +1,44 @@
+{
+  "title": "Quick questions before I design this",
+  "lede": "A clothing-rental membership for new grads building their first work wardrobe: rent or buy pieces, try them on virtually, check your company's dress code, and keep it all simple. Modern, a little feminine, but polished and corporate.",
+  "questions": [
+    { "id": "page", "type": "single", "title": "Which screen should I design first?",
+      "why": "Every design shows the same screen so you can compare them side by side, and your brief describes several.",
+      "options": [
+        { "label": "Home", "detail": "Picks for you, brand deals, and your next rental, all in one place" },
+        { "label": "Virtual try-on", "detail": "Your photo wearing an outfit before you rent or buy" },
+        { "label": "My closet & outfits", "detail": "Clothes you own plus rentals, styled into outfits" },
+        { "label": "Dress code check", "detail": "Your employer's policy and which pieces fit it" }
+      ] },
+    { "id": "device", "type": "single", "title": "Should I design it for a computer or a phone first?",
+      "why": "You said people will use both. Starting with one keeps the comparison fair; the other can follow.",
+      "options": [
+        { "label": "Computer", "detail": "Wider layouts, more on screen at once" },
+        { "label": "Phone", "detail": "One column, thumb-friendly, closer to how grads shop" }
+      ] },
+    { "id": "look", "type": "personality", "title": "How should it feel?",
+      "why": "\"Feminine but corporate\" can go many ways. Nudge the sliders that matter to you and skip the rest.",
+      "sliders": [ ["Soft", "Crisp", 50], ["Warm", "Cool", 50], ["Playful", "Polished", 65] ],
+      "moreSliders": [ ["Airy", "Dense"], ["Quiet", "Bold"] ],
+      "words": ["Confident", "Calm", "Elegant", "Fresh", "Approachable", "Aspirational"],
+      "moreWords": ["Minimal", "Editorial", "Friendly", "Luxe", "Modern"],
+      "maxWords": 4,
+      "textPlaceholder": "e.g. Like a well-cut blazer: sharp but comfortable" },
+    { "id": "avoid", "type": "multi", "max": 3, "title": "What should it definitely not look like?",
+      "why": "Ruling things out helps more than any list of likes; it keeps the designs from drifting toward the usual fashion-app look.",
+      "options": [
+        { "label": "All pink and pastel" },
+        { "label": "Stuffy, like a bank" },
+        { "label": "Busy discount-store" },
+        { "label": "Cold luxury boutique" },
+        { "label": "Generic tech startup" }
+      ] },
+    { "id": "count", "type": "single", "title": "How many directions should I design?",
+      "why": "More directions give you more range; fewer are quicker to compare.",
+      "options": [ { "label": "2" }, { "label": "4" }, { "label": "6", "detail": "Recommended" }, { "label": "8" } ] },
+    { "id": "extra", "type": "free", "title": "Any brands, apps or magazines whose look you admire?",
+      "why": "Optional. Even non-app answers (a store, a magazine) tell me a lot about mood.",
+      "placeholder": "e.g. Aritzia, Rent the Runway, Kit and Ace, The Cut" }
+  ],
+  "defaults": { "page": "Home", "device": "Computer", "look": { "words": ["Confident", "Fresh", "Approachable"] }, "avoid": ["All pink and pastel", "Stuffy, like a bank"], "count": "6" }
+}

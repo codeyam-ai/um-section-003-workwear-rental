@@ -1,0 +1,62 @@
+{
+  "answers": {
+    "avoid": [
+      "All pink and pastel",
+      "Stuffy, like a bank",
+      "Busy discount-store"
+    ],
+    "count": [
+      "6"
+    ],
+    "device": [
+      "Phone"
+    ],
+    "extra": "Rent the Runway, Pickle, Vogue, Aritiza",
+    "look": {
+      "sliders": {
+        "Playful|Polished": 74
+      },
+      "text": "",
+      "words": [
+        "Professional",
+        "Confident"
+      ]
+    },
+    "page": [
+      "Home"
+    ]
+  },
+  "own": {},
+  "summary": [
+    {
+      "answer": "Home",
+      "id": "page",
+      "title": "Which screen should I design first?"
+    },
+    {
+      "answer": "Phone",
+      "id": "device",
+      "title": "Should I design it for a computer or a phone first?"
+    },
+    {
+      "answer": "polished, professional, confident",
+      "id": "look",
+      "title": "How should it feel?"
+    },
+    {
+      "answer": "All pink and pastel, Stuffy, like a bank, Busy discount-store",
+      "id": "avoid",
+      "title": "What should it definitely not look like?"
+    },
+    {
+      "answer": "6",
+      "id": "count",
+      "title": "How many directions should I design?"
+    },
+    {
+      "answer": "Rent the Runway, Pickle, Vogue, Aritiza",
+      "id": "extra",
+      "title": "Any brands, apps or magazines whose look you admire?"
+    }
+  ]
+}
