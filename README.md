@@ -1,6 +1,6 @@
 # Lapel: workwear rental (design exploration)
 
-University of Michigan, section 003 (4th presentation).
+Built live in ENTR 411 at the University of Michigan (section 003, 4th presentation) with [CodeYam](https://codeyam.com). [Class slides](https://codeyam-curriculum.vercel.app/deck/entr-411).
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/codeyam-ai/um-section-003-workwear-rental?quickstart=1)
 
